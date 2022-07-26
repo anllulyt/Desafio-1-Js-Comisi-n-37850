@@ -1,56 +1,88 @@
 // variables iniciales
-let nContProductos = Number(prompt("Escribe la cantidad de productos a comprar, hasta 10 productos"))
-let pregunta = NaN
+let nContProductos = 0
 let repetir = true
+//funcion para que salga del while si el usuario cancela la transacción 
+function continuar(pregunta) {
+    if (pregunta === true) {
+        repetir = false
+        nContProductos = 0
+    }
+}
 
-// while para verificar si se ingresó el valor correcto para continuar o cancelar la transacción
-while (repetir) {
-    pregunta = "no"
-  //  repetir = true
-    // si el valor es mas de 20 se alerta 
-    if (nContProductos > 10) {
+function validanumero (numero){
+    if ((numero <= 0) || (numero == "") || (isNaN(numero))) {
+        return true    
+    }
+    else{
+        return false
+    }
+}
+
+//funcion para validar que los datos sean correctos  
+function validar(ncantidad) {
+    let validanum = validanumero ( ncantidad )
+    if (ncantidad > 10) {
         alert("Solo puede facturar hasta 10 productos")
-        nContProductos = Number(prompt("Escribe la cantidad de productos a comprar, hasta 10 productos"))
-        repetir = true
-    } else if ((nContProductos === 0) || (nContProductos == "")) {
-        alert("No agregó una cantidad valida")
-        pregunta = prompt("¿Desea Cancelar? si/no").toLowerCase()
-        if (pregunta === "si") {
-            repetir = false
-        } else if (pregunta === "no") {
-            repetir = true
-            nContProductos = Number(prompt("Escribe la cantidad de productos a comprar, hasta 10 productos"))
-        } else {
-            alert("respuesta no valida")
-            repetir = true
-        }
+        continuar(confirm("¿Desea Cancelar?"))
+    } else if (validanum === true) {
+        alert(`No agregó un numero valido:   ${ncantidad}`)
+        continuar(confirm("¿Desea Cancelar?"))
     } else {
         repetir = false
     }
 }
 
-let i = 1;
-let producto = NaN;
-let monto = 0;
-let total = 0;
+// while para iniciar / ingrsar /validar el dato 
+while (repetir) {
+    nContProductos = prompt("Escribe la cantidad de productos a comprar, hasta 10 productos")
+    validar(nContProductos)
+}
 
-// se abre un if si no se cancela la transacción 
-if (pregunta === "no") {
+// se abre un if para realizar los calculos 
+if (nContProductos > 0) {
+    // declaro varibles 
+    let i = 1
+    let producto
+    let monto 
+    let total = 0
+    // creo funciones de flecha para las operaciones 
+    const suma = (num1, num2) => num1 + num2
+    const iva = num3 => num3 * 0.21
+    const descuento = num4 => num4 * 0.15
+    const subtotal = (num5, num6) => num5 - num6
+
+    // abro un for para que se vaya ingresando y calculando los productos 
     for (i; i <= nContProductos; i++) {
-        producto = prompt("Escribe el nombre del producto: " + i)
-        monto = Number(prompt("Escribe el costo del producto: " + producto))
-
-        total = Number(total) + monto;
-        console.log(i + ".- Producto: " + producto + " Costo: " + monto)
+        //recibo los datos 
+        producto = prompt(`Escribe el nombre del producto:  ${i}`)
+        // validar que el monto ingresado
+        let esnumero = true
+        while (esnumero) {
+            monto = Number(prompt(`Escribe el costo del producto:  ${producto}`))
+            esnumero = validanumero ( monto )
+            if (esnumero === true) {
+                alert(`No agregó un numero valido:   ${monto}`)
+            }
+        }
+        // se va sumando el total de los productos ingresados
+        total = suma(total, monto)
+        // se va mostrando los productos ingresados para ir armando una lista
+        console.log(`${i} .- Producto:  ${producto} Costo: ${monto}`)
     }
 
-    if ((total === 0) || (total ==  "") ) {
-        alert("No ingreso Monto valido --- Transacción Cancelada, Hasta luego!!")
+    let nMontoDesc = 0
+    if (total > 1000) {
+        nMontoDesc = descuento(total)
     }
-    else{
-        
-        console.log("Total a pagar para " + nContProductos + " productos " + total)
-    }
+    let nMontoSubtotal = subtotal(total, nMontoDesc)
+    let nMontoIva = iva(nMontoSubtotal)
+    let nMontoTotal = suma(nMontoSubtotal, nMontoIva)
+
+    console.log(`Cantidad de Productos:  ${nContProductos}`)
+    console.log(`Subtotal:  ${total}`)
+    console.log(`Descuento:  ${nMontoDesc} `)
+    console.log(`Iva ${nMontoIva}`)
+    console.log(`Total a pagar: ${nMontoTotal}`)
 } else {
     alert("Transacción Cancelada, Hasta luego!!")
 }
