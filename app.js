@@ -1,88 +1,84 @@
-// variables iniciales
-let nContProductos = 0
-let repetir = true
-//funcion para que salga del while si el usuario cancela la transacción 
-function continuar(pregunta) {
-    if (pregunta === true) {
-        repetir = false
-        nContProductos = 0
+ class productos {
+    constructor(nombre, precio){
+        this.nombre = nombre
+        this.precio = precio
+    }
+    mostrarProducto(){
+        return this.nombre
     }
 }
+const producto1 = new productos("Cesta Decorativa", 1200)
+const producto2 = new productos("Espejo Redondo", 5000)
+const producto3 = new productos("Porta Cubiertos", 2000)
+const producto4 = new productos("Marco de madera", 4500)
+const producto5 = new productos("Lampara", 9000)
+const producto6 = new productos("Mesa de noche", 10000)
+const producto7 = new productos("taza de te", 1500)
+const producto8 = new productos("florero", 2000)
+const producto9 = new productos("PortaVasos", 1900)
+const producto10 = new productos("Mantel", 5000)
 
-function validanumero (numero){
-    if ((numero <= 0) || (numero == "") || (isNaN(numero))) {
-        return true    
+class detallePedido {
+    constructor(producto, cantidad) {
+        this.producto = producto;
+        this.cantidad = cantidad;
     }
-    else{
-        return false
+    calcSubtotal() {
+        let subtotal = this.producto.precio * this.cantidad;
+        return subtotal
+    }
+    mostrarDetalle() {
+        return (`Cantidad: ${this.cantidad}  Producto: ${this.producto.mostrarProducto()}   ( $ ${this.calcSubtotal()} )`)
     }
 }
+const detallePedido1 = new detallePedido(producto1, 2);
+const detallePedido2 = new detallePedido(producto2, 1);
+const detallePedido3 = new detallePedido(producto3, 2);
+const detallePedido4 = new detallePedido(producto4, 4);
+const detallePedido5 = new detallePedido(producto5, 1);
+const detallePedido6 = new detallePedido(producto1, 1);
+const detallePedido7 = new detallePedido(producto2, 1);
+const detallePedido8 = new detallePedido(producto3, 2);
+const detallePedido9 = new detallePedido(producto4, 1);
+const detallePedido10 = new detallePedido(producto5, 1);
 
-//funcion para validar que los datos sean correctos  
-function validar(ncantidad) {
-    let validanum = validanumero ( ncantidad )
-    if (ncantidad > 10) {
-        alert("Solo puede facturar hasta 10 productos")
-        continuar(confirm("¿Desea Cancelar?"))
-    } else if (validanum === true) {
-        alert(`No agregó un numero valido:   ${ncantidad}`)
-        continuar(confirm("¿Desea Cancelar?"))
-    } else {
-        repetir = false
+class pedido {
+    constructor(fecha, detalles) {
+        this.fecha = fecha;
+        this. detalles = detalles;
     }
-}
-
-// while para iniciar / ingrsar /validar el dato 
-while (repetir) {
-    nContProductos = prompt("Escribe la cantidad de productos a comprar, hasta 10 productos")
-    validar(nContProductos)
-}
-
-// se abre un if para realizar los calculos 
-if (nContProductos > 0) {
-    // declaro varibles 
-    let i = 1
-    let producto
-    let monto 
-    let total = 0
-    // creo funciones de flecha para las operaciones 
-    const suma = (num1, num2) => num1 + num2
-    const iva = num3 => num3 * 0.21
-    const descuento = num4 => num4 * 0.15
-    const subtotal = (num5, num6) => num5 - num6
-
-    // abro un for para que se vaya ingresando y calculando los productos 
-    for (i; i <= nContProductos; i++) {
-        //recibo los datos 
-        producto = prompt(`Escribe el nombre del producto:  ${i}`)
-        // validar que el monto ingresado
-        let esnumero = true
-        while (esnumero) {
-            monto = Number(prompt(`Escribe el costo del producto:  ${producto}`))
-            esnumero = validanumero ( monto )
-            if (esnumero === true) {
-                alert(`No agregó un numero valido:   ${monto}`)
-            }
+    calcTotal() {
+        let total= 0;
+        for(const dt of this.detalles) {
+            total = total + dt.calcSubtotal();
         }
-        // se va sumando el total de los productos ingresados
-        total = suma(total, monto)
-        // se va mostrando los productos ingresados para ir armando una lista
-        console.log(`${i} .- Producto:  ${producto} Costo: ${monto}`)
+        return total;
     }
-
-    let nMontoDesc = 0
-    if (total > 1000) {
-        nMontoDesc = descuento(total)
+    mostrarPedido() {
+        let txt = `Pedidos a la fecha:  ${this.fecha.toLocaleString()} \n`;
+        for(const dt of this.detalles) {
+            txt = `${txt} - ${dt.mostrarDetalle()} \n`
+        }
+        txt = `${txt} \n ************** Total a pagar: $ + Intl.NumberFormat().format(${this.calcTotal()}`
+        return txt
     }
-    let nMontoSubtotal = subtotal(total, nMontoDesc)
-    let nMontoIva = iva(nMontoSubtotal)
-    let nMontoTotal = suma(nMontoSubtotal, nMontoIva)
-
-    console.log(`Cantidad de Productos:  ${nContProductos}`)
-    console.log(`Subtotal:  ${total}`)
-    console.log(`Descuento:  ${nMontoDesc} `)
-    console.log(`Iva ${nMontoIva}`)
-    console.log(`Total a pagar: ${nMontoTotal}`)
-} else {
-    alert("Transacción Cancelada, Hasta luego!!")
 }
+const arrayPedidos = [];
+arrayPedidos.push(detallePedido1)
+arrayPedidos.push(detallePedido2)
+arrayPedidos.push(detallePedido3)
+arrayPedidos.push(detallePedido4)
+arrayPedidos.push(detallePedido5)
+arrayPedidos.push(detallePedido6)
+arrayPedidos.push(detallePedido7)
+arrayPedidos.push(detallePedido8)
+arrayPedidos.push(detallePedido9)
+arrayPedidos.push(detallePedido10)
+
+const pedido1 = new pedido(new Date(), arrayPedidos);
+
+const iniciarPedido = () => {
+    console.log(pedido1.mostrarPedido())
+}
+
+iniciarPedido();
