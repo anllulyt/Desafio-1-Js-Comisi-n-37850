@@ -59,7 +59,7 @@ class pedido {
         for(const dt of this.detalles) {
             txt = `${txt} - ${dt.mostrarDetalle()} \n`
         }
-        txt = `${txt} \n ************** Total a pagar: $ + Intl.NumberFormat().format(${this.calcTotal()}`
+        txt = `${txt} \n ************** Total a pagar: $  ${this.calcTotal()}`
         return txt
     }
 }
